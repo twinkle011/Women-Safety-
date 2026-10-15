@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SheSafe – Women's Safety & Emergency Support System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --purple: #6A1B9A;
+            --purple-light: #9C27B0;
+            --purple-bg: #F3E5F5;
+            --pink: #E91E63;
+            --pink-light: #FCE4EC;
+            --pink-mid: #F48FB1;
+            --red-sos: #D32F2F;
+            --red-sos-hover: #B71C1C;
+            --green: #2E7D32;
+            --bg: #FAF5FF;
+            --white: #FFFFFF;
+            --gray: #666;
+            --border: #E1D7EB;
+            --shadow: 0 4px 20px rgba(106,27,154,0.12);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+
+        body { background: var(--bg); color: #212121; min-height: 100vh; }
+
+        /* ===================== SCREEN SYSTEM ===================== */
+        .screen { display:none; min-height:100vh; }
+        .screen.active { display:flex; flex-direction:column; }
+
+        /* ===================== WELCOME SCREEN ===================== */
+        #screen-welcome {
+            background: linear-gradient(135deg, #6A1B9A 0%, #9C27B0 40%, #E91E63 100%);
+            align-items: center; justify-content: center; text-align: center;
+            position: relative; overflow: hidden;
+        }
+        #screen-welcome::before {
+            content:''; position:absolute; width:500px; height:500px;
+            background:rgba(255,255,255,0.05); border-radius:50%;
+            top:-100px; left:-100px;
+        }
+        #screen-welcome::after {
+            content:''; position:absolute; width:400px; height:400px;
+            background:rgba(255,255,255,0.05); border-radius:50%;
+            bottom:-80px; right:-80px;
+        }
+        .welcome-box { position:relative; z-index:1; padding:2rem; max-width:480px; width:100%; }
+        .welcome-shield { font-size:5rem; margin-bottom:1rem; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+        .welcome-box h1 { font-size:3.5rem; font-weight:800; color:#fff; letter-spacing:2px; margin-bottom:0.3rem; }
+        .welcome-tagline { font-size:1.1rem; color:rgba(255,255,255,0.85); font-style:italic; margin-bottom:0.5rem; }
+        .welcome-sub { font-size:0.9rem; color:rgba(255,255,255,0.65); margin-bottom:2.5rem; }
+        .welcome-btns { display:flex; gap:1rem; flex-direction:column; }
+        .btn-welcome-login {
+            background:#fff; color:var(--purple); font-weight:700; font-size:1rem;
+            padding:0.85rem; border:none; border-radius:30px; cursor:pointer;
+            transition:all 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .btn-welcome-login:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(0,0,0,0.25); }
+        .btn-welcome-register {
+            background:transparent; color:#fff; font-weight:700; font-size:1rem;
+            padding:0.85rem; border:2px solid rgba(255,255,255,0.7); border-radius:30px;
+            cursor:pointer; transition:all 0.3s;
+        }
+        .btn-welcome-register:hover { background:rgba(255,255,255,0.15); transform:translateY(-2px); }
+        .welcome-helpline { margin-top:2rem; font-size:0.8rem; color:rgba(255,255,255,0.6); }
+        .welcome-helpline strong { color:rgba(255,255,255,0.9); }
+
+        /* ===================== CARD SCREENS (Register/Login) ===================== */
+        .card-screen {
+            background: linear-gradient(160deg, var(--purple-bg) 0%, var(--pink-light) 100%);
+            align-items: center; justify-content: center; padding: 2rem 1rem;
+        }
+        .card {
+            background: var(--white); border-radius: 20px;
+            box-shadow: var(--shadow); padding: 2.5rem 2rem;
+            width: 100%; max-width: 440px; position: relative;
+        }
+        .card-header { text-align:center; margin-bottom:1.8rem; }
+        .card-header .icon { font-size:2.5rem; }
+        .card-header h2 { font-size:1.6rem; font-weight:700; color:var(--purple); margin:0.4rem 0 0.2rem; }
+        .card-header p { font-size:0.85rem; color:var(--gray); }
+
+        .form-group { margin-bottom:1.1rem; }
+        .form-group label { display:block; font-size:0.82rem; font-weight:600; color:#444; margin-bottom:0.35rem; }
+        .form-group input, .form-group select, .form-group textarea {
+            width:100%; padding:0.7rem 1rem; border:2px solid var(--border);
+            border-radius:10px; font-size:0.9rem; font-family:'Poppins',sans-serif;
+            transition:border 0.25s; outline:none; background:#fff;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--purple-light);
+        }
+        .form-group textarea { resize:vertical; min-height:80px; }
+        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; }
+
+        .btn-primary {
+            width:100%; background:linear-gradient(135deg, var(--purple), var(--purple-light));
+            color:#fff; font-weight:700; font-size:1rem; padding:0.85rem;
+            border:none; border-radius:12px; cursor:pointer; transition:all 0.3s;
+            margin-top:0.5rem;
+        }
+        .btn-primary:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(106,27,154,0.35); }
+        .btn-secondary {
+            width:100%; background:transparent; color:var(--purple);
+            font-weight:600; font-size:0.9rem; padding:0.7rem;
+            border:2px solid var(--border); border-radius:12px; cursor:pointer;
+            transition:all 0.3s; margin-top:0.5rem;
+        }
+        .btn-secondary:hover { border-color:var(--purple-light); background:var(--purple-bg); }
+        .btn-danger {
+            background:linear-gradient(135deg, #c62828, var(--red-sos));
+            color:#fff; font-weight:700; padding:0.7rem 1.2rem;
+            border:none; border-radius:10px; cursor:pointer; transition:all 0.3s;
+        }
+        .btn-danger:hover { transform:translateY(-2px); box-shadow:0 4px 15px rgba(211,47,47,0.4); }
+
+        .msg { padding:0.7rem 1rem; border-radius:8px; font-size:0.85rem; font-weight:500; margin-bottom:1rem; text-align:center; }
+        .msg-error { background:#FFEBEE; color:#C62828; border:1px solid #FFCDD2; }
+        .msg-success { background:#E8F5E9; color:#1B5E20; border:1px solid #C8E6C9; }
+        .msg-info { background:#E3F2FD; color:#1565C0; border:1px solid #BBDEFB; }
+
+        /* ===================== DASHBOARD ===================== */
+        #screen-dashboard { background:var(--bg); flex-direction:column; }
+        .dash-nav {
+            background:linear-gradient(135deg, var(--purple), var(--purple-light));
+            color:#fff; padding:1rem 1.5rem;
+            display:flex; justify-content:space-between; align-items:center;
+        }
+        .dash-nav .logo { font-size:1.4rem; font-weight:800; letter-spacing:1px; }
+        .dash-nav .user-info { font-size:0.85rem; opacity:0.85; }
+        .btn-logout {
+            background:rgba(255,255,255,0.15); color:#fff; border:1px solid rgba(255,255,255,0.4);
+            padding:0.4rem 1rem; border-radius:20px; cursor:pointer; font-size:0.82rem; font-weight:600;
+            transition:all 0.2s;
+        }
+        .btn-logout:hover { background:rgba(255,255,255,0.25); }
+
+        .dash-body { flex:1; padding:1.5rem; max-width:860px; margin:0 auto; width:100%; }
+        .dash-welcome {
+            background: linear-gradient(135deg, var(--purple-bg), var(--pink-light));
+            border-radius:16px; padding:1.5rem; margin-bottom:1.5rem;
+            border-left:5px solid var(--purple);
+        }
+        .dash-welcome h2 { color:var(--purple); font-size:1.3rem; margin-bottom:0.2rem; }
+        .dash-welcome p { color:var(--gray); font-size:0.85rem; }
+
+        .sos-section {
+            background: linear-gradient(135deg, #FFF5F5, #FFEBEE);
+            border:2px solid #FFCDD2; border-radius:16px;
+            padding:1.5rem; margin-bottom:1.5rem;
+            display:flex; align-items:center; justify-content:space-between;
+            flex-wrap:wrap; gap:1rem;
+        }
+        .sos-section .sos-text h3 { color:var(--red-sos); font-size:1.1rem; margin-bottom:0.3rem; }
+        .sos-section .sos-text p { font-size:0.82rem; color:#888; max-width:400px; }
+        .sos-btn-big {
+            background:linear-gradient(135deg, var(--red-sos), #EF5350);
+            color:#fff; font-size:1.3rem; font-weight:900; letter-spacing:2px;
+            padding:1rem 2.5rem; border:none; border-radius:50px; cursor:pointer;
+            box-shadow: 0 6px 25px rgba(211,47,47,0.45);
+            animation: sosPulse 1.8s ease-in-out infinite;
+            transition: transform 0.2s;
+        }
+        @keyframes sosPulse {
+            0%,100% { box-shadow:0 6px 25px rgba(211,47,47,0.45); }
+            50% { box-shadow:0 10px 40px rgba(211,47,47,0.7); transform:scale(1.04); }
+        }
+        .sos-btn-big:hover { transform:scale(1.06) !important; background:var(--red-sos-hover); }
+
+        .action-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; }
+        .action-card {
+            background:var(--white); border:1px solid var(--border);
+            border-radius:14px; padding:1.4rem 1rem;
+            text-align:center; cursor:pointer;
+            transition:all 0.25s; box-shadow:0 2px 8px rgba(0,0,0,0.05);
+        }
+        .action-card:hover { transform:translateY(-4px); box-shadow:0 8px 25px rgba(106,27,154,0.15); border-color:var(--purple-light); }
+        .action-card .ac-icon { font-size:2rem; margin-bottom:0.6rem; }
+        .action-card h4 { font-size:0.9rem; color:var(--purple); font-weight:700; }
+        .action-card p { font-size:0.75rem; color:var(--gray); margin-top:0.3rem; }
+
+        .helpline-bar {
+            background:var(--purple); color:#fff; border-radius:12px;
+            padding:0.8rem 1.2rem; margin-top:1.5rem;
+            display:flex; justify-content:space-between; align-items:center;
+            flex-wrap:wrap; gap:0.5rem; font-size:0.82rem;
+        }
+        .helpline-bar a { color:#F8BBD0; text-decoration:none; font-weight:600; }
+
+        /* ===================== EMERGENCY CONTACTS ===================== */
+        .inner-screen { background:var(--bg); flex-direction:column; }
+        .inner-nav {
+            background:var(--white); border-bottom:2px solid var(--border);
+            padding:1rem 1.5rem; display:flex; align-items:center; gap:1rem;
+        }
+        .btn-back {
+            background:var(--purple-bg); color:var(--purple); border:none;
+            padding:0.5rem 1rem; border-radius:8px; cursor:pointer; font-weight:600;
+            font-size:0.85rem; transition:all 0.2s;
+        }
+        .btn-back:hover { background:var(--purple); color:#fff; }
+        .inner-nav h2 { font-size:1.2rem; font-weight:700; color:var(--purple); }
+
+        .inner-body { flex:1; padding:1.5rem; max-width:860px; margin:0 auto; width:100%; }
+
+        .contacts-form-card {
+            background:var(--white); border-radius:14px; padding:1.5rem;
+            box-shadow:var(--shadow); margin-bottom:1.5rem;
+        }
+        .contacts-form-card h3 { font-size:1rem; font-weight:700; color:var(--purple); margin-bottom:1rem; }
+        .contact-form-row { display:grid; grid-template-columns:1fr 1fr auto; gap:0.8rem; align-items:end; }
+
+        .contacts-table-card {
+            background:var(--white); border-radius:14px; padding:1.5rem; box-shadow:var(--shadow);
+        }
+        .contacts-table-card h3 { font-size:1rem; font-weight:700; color:var(--purple); margin-bottom:1rem; }
+        table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+        th { background:var(--purple-bg); color:var(--purple); font-weight:700; padding:0.7rem 0.8rem; text-align:left; }
+        td { padding:0.65rem 0.8rem; border-bottom:1px solid var(--border); }
+        tr:hover td { background:#FAF5FF; }
+        .badge-status { padding:0.2rem 0.6rem; border-radius:20px; font-size:0.75rem; font-weight:600; }
+        .badge-active { background:#E8F5E9; color:#2E7D32; }
+
+        /* ===================== SAFETY TIPS ===================== */
+        .tips-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1rem; }
+        .tip-card {
+            background:var(--white); border-radius:14px; padding:1.3rem;
+            box-shadow:0 2px 10px rgba(0,0,0,0.06); border-left:4px solid var(--purple);
+            transition:transform 0.2s;
+        }
+        .tip-card:hover { transform:translateY(-3px); }
+        .tip-card .tip-icon { font-size:1.8rem; margin-bottom:0.5rem; }
+        .tip-card h4 { color:var(--purple); font-size:0.95rem; margin-bottom:0.4rem; }
+        .tip-card p { color:var(--gray); font-size:0.82rem; line-height:1.6; }
+        .tip-card.pink { border-left-color:var(--pink); }
+        .tip-card.pink h4 { color:var(--pink); }
+        .helpline-box {
+            background:linear-gradient(135deg,var(--purple),var(--purple-light));
+            color:#fff; border-radius:14px; padding:1.5rem; margin-top:1.5rem;
+        }
+        .helpline-box h3 { margin-bottom:1rem; font-size:1.1rem; }
+        .helpline-numbers { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:0.7rem; }
+        .hnum { background:rgba(255,255,255,0.15); border-radius:10px; padding:0.8rem; text-align:center; }
+        .hnum .num { font-size:1.4rem; font-weight:800; }
+        .hnum .label { font-size:0.75rem; opacity:0.8; margin-top:0.2rem; }
+
+        /* ===================== INCIDENT REPORTING ===================== */
+        .report-card { background:var(--white); border-radius:14px; padding:2rem; box-shadow:var(--shadow); }
+
+        /* ===================== SOS MODAL ===================== */
+        .modal-overlay {
+            display:none; position:fixed; inset:0;
+            background:rgba(0,0,0,0.6); z-index:9999;
+            align-items:center; justify-content:center; padding:1rem;
+        }
+        .modal-overlay.open { display:flex; }
+        .modal-box {
+            background:#fff; border-radius:20px; padding:2rem;
+            max-width:480px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.3);
+            animation:modalPop 0.3s ease;
+        }
+        @keyframes modalPop { from{transform:scale(0.85);opacity:0} to{transform:scale(1);opacity:1} }
+        .modal-box.sos-modal { border-top:6px solid var(--red-sos); }
+        .modal-box h3 { color:var(--red-sos); font-size:1.2rem; margin-bottom:1rem; }
+        .sos-result-row { display:flex; justify-content:space-between; padding:0.5rem 0; border-bottom:1px solid #f0f0f0; font-size:0.85rem; }
+        .sos-result-row .label { color:var(--gray); }
+        .sos-result-row .value { font-weight:600; color:#333; }
+        .delivered { color:var(--green) !important; }
+        .dispatch-log { background:#FFF8F8; border:1px solid #FFCDD2; border-radius:8px; padding:0.8rem; margin:1rem 0; font-size:0.82rem; }
+        .dispatch-log p { padding:0.3rem 0; }
+        .modal-footer { display:flex; gap:0.8rem; margin-top:1rem; }
+        .modal-footer button { flex:1; padding:0.75rem; border-radius:10px; font-weight:700; cursor:pointer; font-size:0.9rem; }
+        .btn-confirm { background:var(--red-sos); color:#fff; border:none; }
+        .btn-confirm:hover { background:var(--red-sos-hover); }
+        .btn-cancel { background:var(--purple-bg); color:var(--purple); border:none; }
+        .btn-cancel:hover { background:var(--border); }
+        .btn-ok { background:var(--purple); color:#fff; border:none; flex:1; }
+
+        /* ===================== SOS HISTORY ===================== */
+        .history-card { background:var(--white); border-radius:14px; padding:1.5rem; box-shadow:var(--shadow); }
+        .history-item { border:1px solid var(--border); border-radius:10px; padding:1rem; margin-bottom:0.8rem; position:relative; }
+        .history-item.sent { border-left:4px solid var(--green); }
+        .history-item.pending { border-left:4px solid orange; }
+        .history-item h4 { font-size:0.92rem; color:#333; margin-bottom:0.3rem; }
+        .history-item .meta { font-size:0.78rem; color:var(--gray); }
+        .badge-sent { background:#E8F5E9; color:#2E7D32; padding:0.2rem 0.6rem; border-radius:20px; font-size:0.72rem; font-weight:700; }
+        .badge-pending { background:#FFF8E1; color:#E65100; padding:0.2rem 0.6rem; border-radius:20px; font-size:0.72rem; font-weight:700; }
+        .empty-state { text-align:center; padding:3rem; color:var(--gray); }
+        .empty-state .ei { font-size:3rem; margin-bottom:0.5rem; }
+
+        /* ===================== RESPONSIVE ===================== */
+        @media(max-width:600px) {
+            .welcome-box h1 { font-size:2.5rem; }
+            .contact-form-row { grid-template-columns:1fr; }
+            .form-row { grid-template-columns:1fr; }
+            .sos-section { flex-direction:column; align-items:flex-start; }
+            .dash-nav { flex-wrap:wrap; gap:0.5rem; }
+        }
+
+        /* ===================== SCROLLBAR ===================== */
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-thumb { background:var(--purple-light); border-radius:3px; }
+    </style>
+</head>
+<body>
+
+<!-- =================== WELCOME SCREEN =================== -->
+<div class="screen active" id="screen-welcome">
+    <div class="welcome-box">
+        <div class="welcome-shield">🛡️</div>
+        <h1>SheSafe</h1>
+        <p class="welcome-tagline">"Your Safety, Our Priority"</p>
+        <p class="welcome-sub">A comprehensive women's safety & emergency support system with SOS alerts, emergency contacts, and incident reporting.</p>
+        <div class="welcome-btns">
+            <button class="btn-welcome-login" onclick="go('login')">🔐 Login to Your Account</button>
+            <button class="btn-welcome-register" onclick="go('register')">✨ Create New Account</button>
+        </div>
+        <div class="welcome-helpline">
+            Emergency Helplines: <strong>Police: 112</strong> &nbsp;|&nbsp; <strong>Women: 1091</strong> &nbsp;|&nbsp; <strong>Ambulance: 108</strong>
+        </div>
+    </div>
+</div>
+
+<!-- =================== REGISTER SCREEN =================== -->
+<div class="screen card-screen" id="screen-register">
+    <div class="card">
+        <div class="card-header">
+            <div class="icon">📝</div>
+            <h2>Create Account</h2>
+            <p>Join SheSafe and stay protected</p>
+        </div>
+        <div id="reg-msg"></div>
+        <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="reg-name" placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" id="reg-email" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+            <label>Phone Number *</label>
+            <input type="tel" id="reg-phone" placeholder="+91 98765 43210">
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Password *</label>
+                <input type="password" id="reg-pass" placeholder="Min 6 characters">
+            </div>
+            <div class="form-group">
+                <label>Confirm Password *</label>
+                <input type="password" id="reg-cpass" placeholder="Repeat password">
+            </div>
+        </div>
+        <button class="btn-primary" onclick="doRegister()">🚀 Register Account</button>
+        <button class="btn-secondary" onclick="go('welcome')">← Back to Welcome</button>
+    </div>
+</div>
+
+<!-- =================== LOGIN SCREEN =================== -->
+<div class="screen card-screen" id="screen-login">
+    <div class="card">
+        <div class="card-header">
+            <div class="icon">🔐</div>
+            <h2>Welcome Back</h2>
+            <p>Login to access your SheSafe dashboard</p>
+        </div>
+        <div id="login-msg"></div>
+        <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" id="login-email" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+            <label>Password *</label>
+            <input type="password" id="login-pass" placeholder="Your password">
+        </div>
+        <button class="btn-primary" onclick="doLogin()">🔓 Login Securely</button>
+        <button class="btn-secondary" onclick="go('register')" style="margin-top:0.4rem;">✨ Don't have an account? Register</button>
+        <button class="btn-secondary" onclick="go('welcome')">← Back to Welcome</button>
+        <div style="margin-top:1rem; padding:0.7rem; background:#FFF3E0; border-radius:8px; font-size:0.78rem; color:#E65100; text-align:center;">
+            🔑 <strong>Demo credentials:</strong> priya@shesafe.com / password123
+        </div>
+    </div>
+</div>
+
+<!-- =================== DASHBOARD SCREEN =================== -->
+<div class="screen" id="screen-dashboard">
+    <div class="dash-nav">
+        <div class="logo">🛡️ SheSafe</div>
+        <div class="user-info">Logged in as: <strong id="dash-username">User</strong></div>
+        <button class="btn-logout" onclick="doLogout()">🚪 Logout</button>
+    </div>
+    <div class="dash-body">
+        <div class="dash-welcome">
+            <h2>Welcome back, <span id="dash-greet">User</span>! 👋</h2>
+            <p>You are protected. Your emergency contacts and SOS system are active.</p>
+        </div>
+
+        <!-- SOS Button -->
+        <div class="sos-section">
+            <div class="sos-text">
+                <h3>🚨 EMERGENCY SOS DISTRESS TRIGGER</h3>
+                <p>Press SOS in an emergency. Your saved contacts will be notified instantly with your location.</p>
+            </div>
+            <button class="sos-btn-big" onclick="openSOSConfirm()">🚨 SOS</button>
+        </div>
+
+        <!-- Action Grid -->
+        <div class="action-grid">
+            <div class="action-card" onclick="go('contacts')">
+                <div class="ac-icon">📞</div>
+                <h4>Emergency Contacts</h4>
+                <p>Add & manage your trusted guardians</p>
+            </div>
+            <div class="action-card" onclick="go('tips')">
+                <div class="ac-icon">💡</div>
+                <h4>Safety Tips</h4>
+                <p>Personal safety guidelines & helplines</p>
+            </div>
+            <div class="action-card" onclick="go('report')">
+                <div class="ac-icon">📝</div>
+                <h4>Incident Reporting</h4>
+                <p>Report unsafe incidents confidentially</p>
+            </div>
+            <div class="action-card" onclick="go('history')">
+                <div class="ac-icon">📜</div>
+                <h4>SOS History</h4>
+                <p>View past emergency alerts & logs</p>
+            </div>
+        </div>
+
+        <div class="helpline-bar">
+            <span>⚡ Emergency Helplines:</span>
+            <span>🚔 Police: <strong>112</strong></span>
+            <span>👩 Women Helpline: <strong>1091</strong></span>
+            <span>🏥 Ambulance: <strong>108</strong></span>
+            <span>🔥 Fire: <strong>101</strong></span>
+            <span style="color:#F8BBD0;">● System Online</span>
+        </div>
+    </div>
+</div>
+
+<!-- =================== EMERGENCY CONTACTS SCREEN =================== -->
+<div class="screen inner-screen" id="screen-contacts">
+    <div class="inner-nav">
+        <button class="btn-back" onclick="go('dashboard')">← Back</button>
+        <h2>📞 Emergency Contacts</h2>
+    </div>
+    <div class="inner-body">
+        <div class="contacts-form-card">
+            <h3>➕ Add New Contact</h3>
+            <div id="contact-msg"></div>
+            <div class="contact-form-row">
+                <div class="form-group" style="margin:0">
+                    <label>Contact Name *</label>
+                    <input type="text" id="c-name" placeholder="e.g. Mom, Sister, Friend">
+                </div>
+                <div class="form-group" style="margin:0">
+                    <label>Phone / Email *</label>
+                    <input type="text" id="c-phone" placeholder="+91 98765 43210 or email">
+                </div>
+                <button class="btn-danger" onclick="addContact()" style="height:42px;margin-top:auto;">➕ Add</button>
+            </div>
+        </div>
+
+        <div class="contacts-table-card">
+            <h3>📋 Saved Contacts (<span id="contact-count">0</span>)</h3>
+            <div id="contacts-table-body">
+                <!-- rendered by JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =================== SAFETY TIPS SCREEN =================== -->
+<div class="screen inner-screen" id="screen-tips">
+    <div class="inner-nav">
+        <button class="btn-back" onclick="go('dashboard')">← Back</button>
+        <h2>💡 Safety Tips & Guidelines</h2>
+    </div>
+    <div class="inner-body">
+        <div class="tips-grid">
+            <div class="tip-card">
+                <div class="tip-icon">🌙</div>
+                <h4>Travel Safety at Night</h4>
+                <p>Avoid isolated routes. Prefer well-lit, busy streets. Share your live location with a trusted person before travelling alone at night.</p>
+            </div>
+            <div class="tip-card pink">
+                <div class="tip-icon">📱</div>
+                <h4>Phone & Digital Safety</h4>
+                <p>Keep your phone charged. Save emergency contacts. Enable location sharing and download offline maps. Use screen locks on all devices.</p>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">🚕</div>
+                <h4>Cab & Transport Safety</h4>
+                <p>Verify the cab number and driver before boarding. Share trip details with family. Sit in the back seat and avoid sharing personal info.</p>
+            </div>
+            <div class="tip-card pink">
+                <div class="tip-icon">💪</div>
+                <h4>Self-Defense Awareness</h4>
+                <p>Learn basic self-defense techniques. Use your voice — shout "FIRE!" to attract attention. Carry a personal alarm or whistle when possible.</p>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">🏠</div>
+                <h4>Home & Neighbourhood Safety</h4>
+                <p>Keep doors locked. Know your neighbours. Have a code word with family. Don't open doors to strangers without verification.</p>
+            </div>
+            <div class="tip-card pink">
+                <div class="tip-icon">🌐</div>
+                <h4>Online Harassment</h4>
+                <p>Report cyberstalking at cybercrime.gov.in. Don't share personal info publicly. Use privacy settings on all social media accounts.</p>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">🏋️</div>
+                <h4>Public Spaces</h4>
+                <p>Stay aware of your surroundings. Trust your instincts — if something feels wrong, leave immediately. Walk confidently and assertively.</p>
+            </div>
+            <div class="tip-card pink">
+                <div class="tip-icon">🤝</div>
+                <h4>Know Your Rights</h4>
+                <p>Every woman has the right to file a police complaint. The POCSO Act, Domestic Violence Act, and Section 354 IPC protect you legally.</p>
+            </div>
+        </div>
+
+        <div class="helpline-box">
+            <h3>📞 Emergency Helpline Numbers</h3>
+            <div class="helpline-numbers">
+                <div class="hnum">
+                    <div class="num">112</div>
+                    <div class="label">National Emergency / Police</div>
+                </div>
+                <div class="hnum">
+                    <div class="num">1091</div>
+                    <div class="label">Women Helpline</div>
+                </div>
+                <div class="hnum">
+                    <div class="num">108</div>
+                    <div class="label">Ambulance</div>
+                </div>
+                <div class="hnum">
+                    <div class="num">101</div>
+                    <div class="label">Fire Department</div>
+                </div>
+                <div class="hnum">
+                    <div class="num">1098</div>
+                    <div class="label">Childline</div>
+                </div>
+                <div class="hnum">
+                    <div class="num">181</div>
+                    <div class="label">Women Helpline (Alternate)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =================== INCIDENT REPORTING SCREEN =================== -->
+<div class="screen inner-screen" id="screen-report">
+    <div class="inner-nav">
+        <button class="btn-back" onclick="go('dashboard')">← Back</button>
+        <h2>📝 Incident Reporting</h2>
+    </div>
+    <div class="inner-body">
+        <div class="report-card">
+            <div style="margin-bottom:1.2rem;">
+                <h3 style="color:var(--purple);font-size:1.1rem;">Submit an Incident Report</h3>
+                <p style="font-size:0.83rem;color:var(--gray);margin-top:0.3rem;">Your report is confidential and stored securely. All information is linked to your account only.</p>
+            </div>
+            <div id="report-msg"></div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Incident Type *</label>
+                    <select id="r-type">
+                        <option value="">-- Select Type --</option>
+                        <option>Harassment</option>
+                        <option>Stalking</option>
+                        <option>Domestic Violence</option>
+                        <option>Eve Teasing</option>
+                        <option>Cyberbullying</option>
+                        <option>Physical Assault</option>
+                        <option>Robbery / Theft</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Date of Incident *</label>
+                    <input type="date" id="r-date">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Location *</label>
+                <input type="text" id="r-location" placeholder="e.g. Bus Stand, MG Road, Pune">
+            </div>
+            <div class="form-group">
+                <label>Description *</label>
+                <textarea id="r-desc" placeholder="Describe the incident in detail. Be as specific as possible..."></textarea>
+            </div>
+            <button class="btn-primary" onclick="submitReport()" style="max-width:250px;">📨 Submit Report</button>
+        </div>
+
+        <div id="reports-list" style="margin-top:1.5rem;"></div>
+    </div>
+</div>
+
+<!-- =================== SOS HISTORY SCREEN =================== -->
+<div class="screen inner-screen" id="screen-history">
+    <div class="inner-nav">
+        <button class="btn-back" onclick="go('dashboard')">← Back</button>
+        <h2>📜 SOS Alert History</h2>
+    </div>
+    <div class="inner-body">
+        <div class="history-card">
+            <h3 style="color:var(--purple);font-size:1rem;margin-bottom:1rem;">Past Emergency Alerts</h3>
+            <div id="sos-history-list"></div>
+        </div>
+    </div>
+</div>
+
+<!-- =================== SOS CONFIRM MODAL =================== -->
+<div class="modal-overlay" id="modal-sos-confirm">
+    <div class="modal-box sos-modal">
+        <h3>🚨 EMERGENCY SOS CONFIRMATION</h3>
+        <p style="font-size:0.9rem;color:#555;margin-bottom:1rem;">
+            You are about to trigger an emergency SOS alert. All your saved emergency contacts will be notified immediately with your location details.
+        </p>
+        <div style="background:#FFF8F8;border:1px solid #FFCDD2;border-radius:8px;padding:0.8rem;font-size:0.83rem;color:#555;margin-bottom:1rem;">
+            ⚠️ <strong>Only trigger SOS if you are in a real emergency situation.</strong><br>
+            For immediate help always call <strong>112</strong> or <strong>1091</strong>.
+        </div>
+        <div class="modal-footer">
+            <button class="btn-confirm" onclick="confirmSOS()">✅ CONFIRM SOS</button>
+            <button class="btn-cancel" onclick="closeModal('modal-sos-confirm')">✖ Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- =================== SOS SENT MODAL =================== -->
+<div class="modal-overlay" id="modal-sos-sent">
+    <div class="modal-box sos-modal">
+        <h3>🚨 SOS ALERT DISPATCHED</h3>
+        <div class="sos-result-row"><span class="label">👤 User</span><span class="value" id="sm-user">–</span></div>
+        <div class="sos-result-row"><span class="label">🕐 Timestamp</span><span class="value" id="sm-time">–</span></div>
+        <div class="sos-result-row"><span class="label">📍 Location</span><span class="value">Connaught Place, New Delhi</span></div>
+        <div class="sos-result-row"><span class="label">🗺 Map Link</span><span class="value"><a href="https://maps.google.com/?q=28.6304,77.2177" target="_blank" style="color:var(--purple)">Open in Google Maps</a></span></div>
+        <div class="dispatch-log">
+            <strong style="font-size:0.85rem;color:#C62828;">📤 Dispatch Log:</strong>
+            <div id="sm-log" style="margin-top:0.5rem;"></div>
+        </div>
+        <p style="font-size:0.78rem;color:#999;margin-top:0.5rem;">
+            <em>Note: In a real emergency, always call <strong>112</strong> or <strong>1091</strong> directly.</em>
+        </p>
+        <div class="modal-footer">
+            <button class="btn-ok" onclick="closeModal('modal-sos-sent')">✔ OK, I'm Safe Now</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ================================================================
+//  STATE MANAGEMENT
+// ================================================================
+const DB = {
+    users: [
+        { id:1, name:'Priya Sharma', email:'priya@shesafe.com', phone:'9876543210', password:'password123' }
+    ],
+    contacts: [
+        { id:1, uid:1, name:'Sunita Sharma (Mother)', phone:'9811223344' },
+        { id:2, uid:1, name:'Rajesh Sharma (Father)', phone:'9822334455' }
+    ],
+    reports: [
+        { id:1, uid:1, type:'Eve Teasing', date:'2026-10-01', location:'MG Road Bus Stop', desc:'Faced verbal harassment while waiting for bus.', ts:'2026-10-01T10:30:00' }
+    ],
+    sosHistory: [
+        { id:1, uid:1, ts:'2026-10-05T14:22:00', location:'Connaught Place, New Delhi', status:'SENT' }
+    ],
+    nextId: { users:2, contacts:3, reports:2, sos:2 }
+};
+
+let session = null; // { id, name, email }
+
+// ================================================================
+//  SCREEN NAVIGATION
+// ================================================================
+function go(screenName) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById('screen-' + screenName);
+    if (target) {
+        target.classList.add('active');
+        window.scrollTo(0,0);
+    }
+    // Render dynamic content on entry
+    if (screenName === 'dashboard') renderDashboard();
+    if (screenName === 'contacts') renderContacts();
+    if (screenName === 'history') renderSOSHistory();
+    if (screenName === 'report') renderReports();
+}
+
+// ================================================================
+//  HELPERS
+// ================================================================
+function showMsg(id, text, type='error') {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = `<div class="msg msg-${type}">${text}</div>`;
+    setTimeout(() => { if(el) el.innerHTML = ''; }, 4000);
+}
+function clearMsg(id) { const el = document.getElementById(id); if(el) el.innerHTML=''; }
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function validateEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+function validatePhone(p) { return /^[\+]?[\d\s\-()]{7,15}$/.test(p); }
+
+function now() { return new Date().toLocaleString('en-IN', { dateStyle:'medium', timeStyle:'medium' }); }
+
+// ================================================================
+//  AUTH — REGISTER
+// ================================================================
+function doRegister() {
+    clearMsg('reg-msg');
+    const name  = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim().toLowerCase();
+    const phone = document.getElementById('reg-phone').value.trim();
+    const pass  = document.getElementById('reg-pass').value;
+    const cpass = document.getElementById('reg-cpass').value;
+
+    if (!name || !email || !phone || !pass || !cpass) {
+        showMsg('reg-msg', '⚠️ All fields are required.'); return;
+    }
+    if (!validateEmail(email)) {
+        showMsg('reg-msg', '⚠️ Enter a valid email address.'); return;
+    }
+    if (!validatePhone(phone)) {
+        showMsg('reg-msg', '⚠️ Enter a valid phone number (7–15 digits).'); return;
+    }
+    if (pass.length < 6) {
+        showMsg('reg-msg', '⚠️ Password must be at least 6 characters.'); return;
+    }
+    if (pass !== cpass) {
+        showMsg('reg-msg', '⚠️ Passwords do not match.'); return;
+    }
+    if (DB.users.find(u => u.email === email)) {
+        showMsg('reg-msg', '⚠️ This email is already registered. Please login.'); return;
+    }
+
+    const newUser = { id: DB.nextId.users++, name, email, phone, password: pass };
+    DB.users.push(newUser);
+
+    showMsg('reg-msg', '✅ Account created successfully! Redirecting to login…', 'success');
+    document.getElementById('reg-name').value = '';
+    document.getElementById('reg-email').value = '';
+    document.getElementById('reg-phone').value = '';
+    document.getElementById('reg-pass').value = '';
+    document.getElementById('reg-cpass').value = '';
+
+    setTimeout(() => go('login'), 1800);
+}
+
+// ================================================================
+//  AUTH — LOGIN
+// ================================================================
+function doLogin() {
+    clearMsg('login-msg');
+    const email = document.getElementById('login-email').value.trim().toLowerCase();
+    const pass  = document.getElementById('login-pass').value;
+
+    if (!email || !pass) {
+        showMsg('login-msg', '⚠️ Email and password are required.'); return;
+    }
+    if (!validateEmail(email)) {
+        showMsg('login-msg', '⚠️ Enter a valid email address.'); return;
+    }
+
+    const user = DB.users.find(u => u.email === email && u.password === pass);
+    if (!user) {
+        showMsg('login-msg', '❌ Invalid email or password. Please try again.'); return;
+    }
+
+    session = { id: user.id, name: user.name, email: user.email };
+    showMsg('login-msg', '✅ Login successful! Loading dashboard…', 'success');
+    document.getElementById('login-email').value = '';
+    document.getElementById('login-pass').value = '';
+    setTimeout(() => go('dashboard'), 1200);
+}
+
+// ================================================================
+//  AUTH — LOGOUT
+// ================================================================
+function doLogout() {
+    if (confirm('Are you sure you want to logout from SheSafe?')) {
+        session = null;
+        go('welcome');
+    }
+}
+
+// ================================================================
+//  DASHBOARD
+// ================================================================
+function renderDashboard() {
+    if (!session) { go('welcome'); return; }
+    const firstName = session.name.split(' ')[0];
+    document.getElementById('dash-greet').textContent = firstName;
+    document.getElementById('dash-username').textContent = session.name;
+}
+
+// ================================================================
+//  SOS LOGIC
+// ================================================================
+function openSOSConfirm() {
+    if (!session) { go('welcome'); return; }
+    openModal('modal-sos-confirm');
+}
+
+function confirmSOS() {
+    closeModal('modal-sos-confirm');
+
+    const ts = now();
+    const userContacts = DB.contacts.filter(c => c.uid === session.id);
+
+    // Save to history
+    DB.sosHistory.unshift({
+        id: DB.nextId.sos++,
+        uid: session.id,
+        ts: new Date().toISOString(),
+        location: 'Connaught Place, New Delhi',
+        status: 'SENT'
+    });
+
+    // Build dispatch log
+    document.getElementById('sm-user').textContent = session.name + ' (ID #' + session.id + ')';
+    document.getElementById('sm-time').textContent = ts;
+
+    let logHtml = '';
+    if (userContacts.length === 0) {
+        logHtml = '<p style="color:#888;">No contacts saved — alert logged in system only.</p>';
+    } else {
+        userContacts.forEach(c => {
+            logHtml += `<p>✅ <strong>${c.name}</strong> (${c.phone}) — <span class="delivered">NOTIFIED</span></p>`;
+        });
+    }
+    logHtml += `<p style="color:#777;margin-top:0.4rem;">📊 Women Helpline 1091 — <strong>LOGGED</strong></p>`;
+    document.getElementById('sm-log').innerHTML = logHtml;
+
+    openModal('modal-sos-sent');
+}
+
+// ================================================================
+//  EMERGENCY CONTACTS
+// ================================================================
+function addContact() {
+    clearMsg('contact-msg');
+    const name  = document.getElementById('c-name').value.trim();
+    const phone = document.getElementById('c-phone').value.trim();
+
+    if (!name || !phone) {
+        showMsg('contact-msg', '⚠️ Contact name and phone/email are required.'); return;
+    }
+    if (name.length < 2) {
+        showMsg('contact-msg', '⚠️ Name must be at least 2 characters.'); return;
+    }
+
+    // Check duplicate for this user
+    if (DB.contacts.find(c => c.uid === session.id && c.phone === phone)) {
+        showMsg('contact-msg', '⚠️ This phone/email is already in your contacts.'); return;
+    }
+
+    DB.contacts.push({ id: DB.nextId.contacts++, uid: session.id, name, phone });
+    document.getElementById('c-name').value = '';
+    document.getElementById('c-phone').value = '';
+    showMsg('contact-msg', '✅ Contact added successfully!', 'success');
+    renderContacts();
+}
+
+function deleteContact(id) {
+    if (!confirm('Delete this contact?')) return;
+    const idx = DB.contacts.findIndex(c => c.id === id);
+    if (idx > -1) DB.contacts.splice(idx, 1);
+    renderContacts();
+}
+
+function renderContacts() {
+    const userContacts = DB.contacts.filter(c => c.uid === session.id);
+    document.getElementById('contact-count').textContent = userContacts.length;
+
+    const body = document.getElementById('contacts-table-body');
+    if (userContacts.length === 0) {
+        body.innerHTML = `
+            <div class="empty-state">
+                <div class="ei">📭</div>
+                <p>No contacts added yet.<br>Add your first emergency contact above.</p>
+            </div>`;
+        return;
+    }
+
+    let html = `<table>
+        <thead><tr><th>#</th><th>Contact Name</th><th>Phone / Email</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>`;
+    userContacts.forEach((c, i) => {
+        html += `<tr>
+            <td>${i+1}</td>
+            <td><strong>${escHtml(c.name)}</strong></td>
+            <td>${escHtml(c.phone)}</td>
+            <td><span class="badge-status badge-active">● Active</span></td>
+            <td><button onclick="deleteContact(${c.id})" style="background:#FFEBEE;color:#C62828;border:none;padding:0.3rem 0.8rem;border-radius:6px;cursor:pointer;font-size:0.78rem;font-weight:600;">🗑 Delete</button></td>
+        </tr>`;
+    });
+    html += '</tbody></table>';
+    body.innerHTML = html;
+}
+
+// ================================================================
+//  INCIDENT REPORTING
+// ================================================================
+function submitReport() {
+    clearMsg('report-msg');
+    const type = document.getElementById('r-type').value;
+    const date = document.getElementById('r-date').value;
+    const loc  = document.getElementById('r-location').value.trim();
+    const desc = document.getElementById('r-desc').value.trim();
+
+    if (!type || !date || !loc || !desc) {
+        showMsg('report-msg', '⚠️ All fields are required.'); return;
+    }
+    if (desc.length < 10) {
+        showMsg('report-msg', '⚠️ Please provide a more detailed description (at least 10 characters).'); return;
+    }
+
+    DB.reports.unshift({
+        id: DB.nextId.reports++,
+        uid: session.id,
+        type, date, location: loc, desc,
+        ts: new Date().toISOString()
+    });
+
+    document.getElementById('r-type').value = '';
+    document.getElementById('r-date').value = '';
+    document.getElementById('r-location').value = '';
+    document.getElementById('r-desc').value = '';
+
+    showMsg('report-msg', '✅ Incident report submitted and stored securely.', 'success');
+    renderReports();
+}
+
+function renderReports() {
+    const userReports = DB.reports.filter(r => r.uid === session.id);
+    const container = document.getElementById('reports-list');
+    if (userReports.length === 0) { container.innerHTML = ''; return; }
+
+    let html = `<div class="contacts-table-card">
+        <h3 style="color:var(--purple);font-size:1rem;margin-bottom:1rem;">📋 Your Submitted Reports (${userReports.length})</h3>`;
+    userReports.forEach(r => {
+        html += `<div class="history-item sent" style="margin-bottom:0.8rem;">
+            <h4>🏷 ${escHtml(r.type)} — <span style="font-weight:400;font-size:0.85rem;">${r.date}</span></h4>
+            <div class="meta">📍 ${escHtml(r.location)}</div>
+            <p style="font-size:0.82rem;color:#555;margin-top:0.4rem;">${escHtml(r.desc)}</p>
+        </div>`;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// ================================================================
+//  SOS HISTORY
+// ================================================================
+function renderSOSHistory() {
+    const userHistory = DB.sosHistory.filter(s => s.uid === session.id);
+    const container = document.getElementById('sos-history-list');
+
+    if (userHistory.length === 0) {
+        container.innerHTML = `<div class="empty-state"><div class="ei">✅</div><p>No SOS alerts triggered.<br>Staying safe is the best outcome!</p></div>`;
+        return;
+    }
+
+    let html = '';
+    userHistory.forEach(s => {
+        const d = new Date(s.ts);
+        const formatted = d.toLocaleString('en-IN', { dateStyle:'medium', timeStyle:'short' });
+        const badgeClass = s.status === 'SENT' ? 'badge-sent' : 'badge-pending';
+        const badgeLabel = s.status === 'SENT' ? '✅ SENT' : '⏳ PENDING';
+        html += `<div class="history-item ${s.status.toLowerCase()}">
+            <h4>🚨 Emergency SOS Alert <span class="${badgeClass}">${badgeLabel}</span></h4>
+            <div class="meta">🕐 ${formatted} &nbsp;|&nbsp; 📍 ${escHtml(s.location)}</div>
+            <p style="font-size:0.8rem;color:var(--green);margin-top:0.4rem;">
+                ${DB.contacts.filter(c=>c.uid===session.id).length > 0
+                    ? '📤 Notified ' + DB.contacts.filter(c=>c.uid===session.id).length + ' contact(s)'
+                    : '📤 Logged in system (no contacts saved at time of alert)'}
+            </p>
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+
+// ================================================================
+//  UTILS
+// ================================================================
+function escHtml(s) {
+    return String(s)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+}
+
+// Set today's date as default for report
+document.addEventListener('DOMContentLoaded', () => {
+    const dateInput = document.getElementById('r-date');
+    if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+});
+</script>
+</body>
+</html>
